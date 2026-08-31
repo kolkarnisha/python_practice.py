@@ -1,0 +1,25 @@
+Python 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
+a=true
+Traceback (most recent call last):
+  File "<pyshell#0>", line 1, in <module>
+    a=true
+NameError: name 'true' is not defined. Did you mean: 'True'?
+print(type(a))
+Traceback (most recent call last):
+  File "<pyshell#1>", line 1, in <module>
+    print(type(a))
+NameError: name 'a' is not defined
+NameError: name 'a' is not defined
+SyntaxError: invalid syntax
+print(4>5)
+False
+a=5+6j
+print(type(a))
+<class 'complex'>
+print(a)
+(5+6j)
+b=3-2j
+print(a+b,a-b,a*b)
+(8+4j) (2+8j) (27+8j)
+
