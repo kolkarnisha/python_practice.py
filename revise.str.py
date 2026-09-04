@@ -52,5 +52,17 @@ def sei(str,sub):
     print("substring not found")
   print(f"substring found at index {india} to- {india+len(sub)-1}")
 sei("nishataj","taj")
+''' finding out substring in loop'''
+def seil(str,sub):
+  m=len(str)
+  n=len(sub)
+  f=len(sub)-1
+  for i in range(m-n+1):
+    if str[i:i+n]==sub:
+      end=i+f
+      print(f"substring found at start index {i} to - end {end}")
+    # print("substring not found")
+seil("nishataj","taj")
+      
 
   
