@@ -204,7 +204,15 @@ if palin(str):
   print("yes palindrone")
 # else:
 #   print("no")
-
+palindrone'''
+def palin(str):
+  str.lower().replace("","")
+  return str[::-1]
+str=input()
+if palin(str):
+  print("yes palindrone")
+else:
+  print("no")
 
 
 
