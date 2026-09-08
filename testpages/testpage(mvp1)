@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loops, Theory & DSA — Practice Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #121815;
+    --panel: #182019;
+    --panel-border: #2a352c;
+    --paper: #ECE7DA;
+    --paper-dim: #A9B0A5;
+    --amber: #D9A441;
+    --brick: #C1503F;
+    --teal: #4E9587;
+    --teal-dim: #355c53;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display:flex;
+    justify-content:center;
+    padding: 48px 20px 80px;
+    line-height: 1.5;
+  }
+  .wrap{ width:100%; max-width: 680px; }
+
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 34px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 16px;
+  }
+  header.top h1{
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin:0;
+    letter-spacing: 0.01em;
+  }
+  header.top .score{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--paper-dim);
+  }
+  header.top .score b{ color: var(--amber); font-weight:600; }
+
+  .progress-track{
+    height: 3px;
+    background: var(--panel-border);
+    border-radius: 2px;
+    margin-bottom: 30px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--teal);
+    width:0%;
+    transition: width 0.4s ease;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 32px;
+  }
+
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom: 20px;
+  }
+  .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--teal-dim);
+    color: var(--teal);
+    background: rgba(78,149,135,0.08);
+  }
+  .tag.type-code{ border-color:#5c4a24; color: var(--amber); background: rgba(217,164,65,0.08); }
+  .qcount{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--paper-dim);
+  }
+
+  .question{
+    font-size: 1.18rem;
+    font-weight: 500;
+    margin: 0 0 20px;
+    color: #F5F2E8;
+  }
+
+  pre.code-block{
+    background: #0D110E;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.87rem;
+    color: #D8D3C4;
+    overflow-x:auto;
+    margin: 0 0 22px;
+    white-space: pre;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    cursor:pointer;
+    background: transparent;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    font-size: 0.96rem;
+    color: var(--paper);
+  }
+  .option:hover{ border-color: var(--teal-dim); background: rgba(78,149,135,0.06); }
+  .option.selected{ border-color: var(--teal); background: rgba(78,149,135,0.12); }
+  .option .bullet{
+    flex: 0 0 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--paper-dim);
+    margin-top: 2px;
+    position: relative;
+  }
+  .option.selected .bullet{ border-color: var(--teal); }
+  .option.selected .bullet::after{
+    content:'';
+    position:absolute; top:4px; left:4px; right:4px; bottom:4px;
+    border-radius:50%;
+    background: var(--teal);
+  }
+  .option code{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    color: inherit;
+  }
+
+  .option.correct{ border-color: var(--teal); background: rgba(78,149,135,0.16); }
+  .option.correct .bullet{ border-color: var(--teal); }
+  .option.correct .bullet::after{ background: var(--teal); }
+  .option.wrong{ border-color: var(--brick); background: rgba(193,80,63,0.14); }
+  .option.wrong .bullet{ border-color: var(--brick); }
+  .option.wrong .bullet::after{ background: var(--brick); }
+  .option.disabled{ cursor:default; }
+
+  .btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor:pointer;
+    background: var(--amber);
+    color: #241B0A;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:hover{ filter: brightness(1.08); }
+  .btn:disabled{ opacity: 0.35; cursor:not-allowed; }
+  .btn.next{ background: var(--teal); color: #0B1512; }
+  .btn.ghost{ background: transparent; border:1px solid var(--panel-border); color: var(--paper); }
+
+  .feedback{
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    border: 1px solid;
+    animation: rise 0.25s ease;
+  }
+  @keyframes rise{ from{ opacity:0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0);} }
+  .feedback.correct{ background: rgba(78,149,135,0.1); border-color: var(--teal-dim); }
+  .feedback.wrong{ background: rgba(193,80,63,0.1); border-color: #6b342c; }
+  .feedback .verdict{
+    font-weight: 700;
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .feedback.correct .verdict{ color: var(--teal); }
+  .feedback.wrong .verdict{ color: var(--brick); }
+  .feedback .explain{ font-size: 0.93rem; color: var(--paper); }
+  .feedback .explain code{ font-family:'JetBrains Mono', monospace; font-size:0.88em; background: rgba(255,255,255,0.06); padding:1px 5px; border-radius:4px; }
+  .feedback .answer-line{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--paper-dim);
+    margin-top: 10px;
+  }
+  .feedback .answer-line b{ color: #F5F2E8; }
+
+  .footer-row{
+    display:flex;
+    justify-content:flex-end;
+    gap: 12px;
+  }
+
+  .summary{
+    text-align:center;
+    padding: 20px 10px 10px;
+  }
+  .summary .big{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 2.6rem;
+    color: var(--amber);
+    margin: 10px 0 6px;
+  }
+  .summary p{ color: var(--paper-dim); font-size: 0.95rem; margin-bottom: 26px; }
+
+  @media (max-width: 480px){
+    .card{ padding: 22px; }
+    .question{ font-size: 1.05rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Loops, Theory &amp; DSA</h1>
+    <div class="score">Score <b id="scoreVal">0</b> / <span id="answeredVal">0</span></div>
+  </header>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ---- LOOPS ----
+  {
+    category: "Loops", type: "code",
+    code: `total = 0\nfor i in range(1, 6):\n    if i % 2 == 0:\n        continue\n    total += i\nprint(total)`,
+    question: "What does this print?",
+    options: ["6", "9", "15", "5"],
+    correct: 1,
+    explanation: "The loop runs i = 1,2,3,4,5. <code>continue</code> skips even numbers (2 and 4), so only 1, 3, 5 get added: 1+3+5 = 9."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `for i in range(3):\n    for j in range(3):\n        if j == 1:\n            break\n        print(i, j)`,
+    question: "How many lines does this print in total?",
+    options: ["3", "9", "6", "1"],
+    correct: 0,
+    explanation: "The inner loop breaks as soon as j == 1, so only j = 0 ever prints, once per outer iteration. Outer loop runs 3 times (i = 0,1,2), so 3 lines total."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `n = 5\nwhile n > 0:\n    print(n)\n    n -= 2`,
+    question: "What is the last value printed?",
+    options: ["0", "1", "-1", "5"],
+    correct: 1,
+    explanation: "n goes 5, 3, 1, then n becomes -1 and the loop stops since -1 > 0 is false. The last printed value while the condition was still true is 1."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `words = ["a", "bb", "ccc"]\nfor idx, w in enumerate(words):\n    print(idx, len(w))`,
+    question: "What does the output look like?",
+    options: [
+      "0 1 / 1 2 / 2 3",
+      "1 1 / 2 2 / 3 3",
+      "a 1 / bb 2 / ccc 3",
+      "It raises an error"
+    ],
+    correct: 0,
+    explanation: "<code>enumerate()</code> pairs each item with a zero-based index. So idx is 0,1,2 and len(w) is 1,2,3 respectively."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `squares = [x*x for x in range(5) if x % 2 == 0]\nprint(squares)`,
+    question: "What does this list comprehension produce?",
+    options: ["[0, 4, 16]", "[0, 1, 4, 9, 16]", "[1, 9]", "[0, 2, 4]"],
+    correct: 0,
+    explanation: "It keeps only even x from range(5) — 0, 2, 4 — then squares them: 0*0=0, 2*2=4, 4*4=16, giving [0, 4, 16]."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `x = 0\nfor i in range(4):\n    x += i\nelse:\n    x += 100\nprint(x)`,
+    question: "What does this print? (note the for...else)",
+    options: ["6", "106", "100", "It errors — for loops can't have else"],
+    correct: 1,
+    explanation: "A for loop's <code>else</code> runs when the loop finishes without hitting a <code>break</code>. Here the loop sums 0+1+2+3=6, completes normally, so else adds 100 → 106."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `a, b = 0, 1\nfor _ in range(5):\n    a, b = b, a + b\nprint(a)`,
+    question: "This is a Fibonacci-style loop. What is printed?",
+    options: ["3", "5", "8", "13"],
+    correct: 1,
+    explanation: "Tracing (a,b): start (0,1) → (1,1) → (1,2) → (2,3) → (3,5) → (5,8). After 5 iterations a = 5."
+  },
+  {
+    category: "Loops", type: "code",
+    code: `pairs = list(zip([1,2,3], ['a','b']))\nprint(pairs)`,
+    question: "What does zip() do here when the lists have different lengths?",
+    options: [
+      "[(1,'a'), (2,'b'), (3, None)]",
+      "[(1,'a'), (2,'b')]",
+      "Raises an error",
+      "[(1,'a'), (2,'b'), (3,'a')]"
+    ],
+    correct: 1,
+    explanation: "<code>zip()</code> stops as soon as the shortest iterable runs out. The second list has only 2 elements, so the result has 2 pairs — the third item (3) is simply dropped, no error."
+  },
+
+  // ---- THEORY ----
+  {
+    category: "Theory", type: "mcq",
+    question: "What is the time complexity of binary search on a sorted array of n elements?",
+    options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+    correct: 1,
+    explanation: "Binary search halves the search space every step, so the number of steps grows logarithmically with n, giving O(log n)."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "Which data structure naturally follows Last-In-First-Out (LIFO) order?",
+    options: ["Queue", "Stack", "Linked list", "Hash map"],
+    correct: 1,
+    explanation: "A stack only allows adding and removing from the same end (the top), so the most recently added item is always the first one removed — LIFO."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "What best describes recursion?",
+    options: [
+      "A loop that never terminates",
+      "A function that calls itself, working toward a base case",
+      "A way to sort arrays in place",
+      "A data structure for key-value pairs"
+    ],
+    correct: 1,
+    explanation: "Recursion is when a function calls itself with a smaller version of the problem, until it reaches a base case that stops the recursion."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "In Big-O terms, what is the average time complexity of searching for a key in a well-implemented hash map?",
+    options: ["O(n)", "O(log n)", "O(1)", "O(n^2)"],
+    correct: 2,
+    explanation: "A hash map computes a hash of the key to jump nearly straight to its bucket, so on average lookups take constant time, O(1) — though worst case (many collisions) can degrade to O(n)."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "What does 'mutable' mean for a Python object?",
+    options: [
+      "Its value can be changed after creation",
+      "It cannot be changed after creation",
+      "It can only hold numbers",
+      "It is always thread-safe"
+    ],
+    correct: 0,
+    explanation: "Mutable means the object's internal state can change in place after it's created — e.g. lists and dicts. Immutable objects like tuples and strings cannot change once made; any 'modification' creates a new object."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "Which sorting algorithm has the best average-case time complexity among these?",
+    options: ["Bubble sort — O(n^2)", "Selection sort — O(n^2)", "Merge sort — O(n log n)", "Insertion sort — O(n^2)"],
+    correct: 2,
+    explanation: "Merge sort consistently divides the array in half and merges, giving O(n log n) in the average and worst case, while the other three are O(n^2) on average."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "What is a 'base case' for in a recursive function?",
+    options: [
+      "It makes the function run faster",
+      "It's the condition that stops further recursive calls",
+      "It converts recursion into a loop",
+      "It defines the function's return type"
+    ],
+    correct: 1,
+    explanation: "The base case is the simplest version of the problem that can be answered directly, without further recursive calls — without it, the recursion would never terminate."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "What's the key difference between a list and a tuple in Python?",
+    options: [
+      "Lists are immutable, tuples are mutable",
+      "Lists are mutable, tuples are immutable",
+      "Tuples can't store numbers",
+      "There is no difference"
+    ],
+    correct: 1,
+    explanation: "Lists can be modified after creation (add, remove, change items), while tuples are fixed once created — you can't add, remove, or reassign their elements."
+  },
+  {
+    category: "Theory", type: "mcq",
+    question: "What does 'space complexity' measure?",
+    options: [
+      "How much time an algorithm takes",
+      "How much extra memory an algorithm uses relative to input size",
+      "How many lines of code the algorithm has",
+      "How readable the code is"
+    ],
+    correct: 1,
+    explanation: "Space complexity describes how the memory an algorithm needs grows as the input size grows — separate from time complexity, which measures execution steps."
+  },
+
+  // ---- DSA ----
+  {
+    category: "DSA", type: "code",
+    code: `def mystery(arr):\n    seen = set()\n    for x in arr:\n        if x in seen:\n            return True\n        seen.add(x)\n    return False\n\nprint(mystery([1, 2, 3, 2]))`,
+    question: "What does this function check for, and what's the output?",
+    options: [
+      "Checks if array is sorted; prints False",
+      "Checks for duplicate elements; prints True",
+      "Checks if array is empty; prints True",
+      "Counts unique elements; prints 3"
+    ],
+    correct: 1,
+    explanation: "It tracks seen values in a set and returns True the moment it finds a repeat. Since 2 appears twice, it returns True — this is the classic 'contains duplicate' pattern, running in O(n) time."
+  },
+  {
+    category: "DSA", type: "mcq",
+    question: "You need to repeatedly access elements by index AND frequently insert/delete from the middle efficiently. Which trade-off is true?",
+    options: [
+      "Arrays give O(1) index access but O(n) middle insertion; linked lists give O(n) index access but O(1) insertion once you have the node",
+      "Arrays and linked lists have identical performance for both operations",
+      "Linked lists give O(1) index access always",
+      "Arrays can't be indexed at all"
+    ],
+    correct: 0,
+    explanation: "Arrays store elements contiguously so any index is a direct memory offset (O(1)), but inserting in the middle requires shifting elements (O(n)). Linked lists require walking node-by-node to reach an index (O(n)), but once you're at a node, inserting/removing is O(1)."
+  },
+  {
+    category: "DSA", type: "code",
+    code: `def reverse(s):\n    return s[::-1]\n\nprint(reverse("dsa"))`,
+    question: "What is printed?",
+    options: ["\"dsa\"", "\"asd\"", "\"sad\"", "Error"],
+    correct: 1,
+    explanation: "Slicing with a step of -1 (<code>[::-1]</code>) walks the string backward, reversing \"dsa\" into \"asd\"."
+  },
+  {
+    category: "DSA", type: "mcq",
+    question: "What is the worst-case time complexity of Quicksort?",
+    options: ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
+    correct: 2,
+    explanation: "Quicksort's worst case happens when the pivot repeatedly picks the smallest or largest element (e.g. an already-sorted array with a naive pivot choice), degrading partitioning to O(n^2), even though its average case is O(n log n)."
+  },
+  {
+    category: "DSA", type: "code",
+    code: `stack = []\nstack.append(1)\nstack.append(2)\nstack.append(3)\nstack.pop()\nprint(stack)`,
+    question: "What does this print if a Python list is used as a stack?",
+    options: ["[1, 2, 3]", "[1, 2]", "[2, 3]", "[3]"],
+    correct: 1,
+    explanation: "<code>append()</code> pushes to the top (end of list), and <code>pop()</code> (no argument) removes from the top. After pushing 1,2,3 and popping once, 3 is removed, leaving [1, 2]."
+  },
+  {
+    category: "DSA", type: "mcq",
+    question: "Which traversal visits a binary tree's nodes in the order: left subtree, root, right subtree?",
+    options: ["Pre-order", "In-order", "Post-order", "Level-order"],
+    correct: 1,
+    explanation: "In-order traversal visits left, then root, then right. Notably, on a binary search tree this visits nodes in sorted order."
+  },
+  {
+    category: "DSA", type: "code",
+    code: `def fact(n):\n    if n <= 1:\n        return 1\n    return n * fact(n - 1)\n\nprint(fact(4))`,
+    question: "What does this recursive function return?",
+    options: ["10", "24", "16", "4"],
+    correct: 1,
+    explanation: "fact(4) = 4 * fact(3) = 4 * 3 * fact(2) = 4 * 3 * 2 * fact(1) = 4*3*2*1 = 24. This is the classic recursive factorial pattern."
+  },
+  {
+    category: "DSA", type: "mcq",
+    question: "What's the main advantage of a hash map over a list when checking 'does this value exist'?",
+    options: [
+      "Hash maps use less memory always",
+      "Hash maps check membership in O(1) average time vs O(n) for scanning a list",
+      "Hash maps keep elements sorted automatically",
+      "Lists can't store duplicate-free values"
+    ],
+    correct: 1,
+    explanation: "A list requires scanning elements one by one to check membership (O(n)). A hash map computes a hash to jump directly to the right bucket, making average membership checks O(1)."
+  },
+  {
+    category: "DSA", type: "code",
+    code: `def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen:\n            return [seen[target - n], i]\n        seen[n] = i\n\nprint(two_sum([2, 7, 11, 15], 9))`,
+    question: "This is the classic 'Two Sum' pattern. What does it print?",
+    options: ["[0, 1]", "[1, 2]", "[2, 7]", "None"],
+    correct: 0,
+    explanation: "It looks for a previously-seen number that complements the current one to hit the target. At i=0, n=2, it stores 2. At i=1, n=7, it checks if 9-7=2 is in seen — yes, at index 0. So it returns [0, 1]. This runs in O(n) instead of the O(n^2) brute force."
+  }
+];
+
+// Fisher-Yates shuffle for a random order each run
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let order = shuffle(QUESTIONS.map((_, i) => i));
+let current = 0;
+let score = 0;
+let answered = 0;
+let selectedOption = null;
+let isAnswered = false;
+
+const card = document.getElementById('card');
+
+function updateHeader(){
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('answeredVal').textContent = answered;
+  const pct = (current / order.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderQuestion(){
+  isAnswered = false;
+  selectedOption = null;
+  const q = QUESTIONS[order[current]];
+
+  const codeHtml = q.type === 'code'
+    ? `<pre class="code-block">${escapeHtml(q.code)}</pre>`
+    : '';
+
+  const optionsHtml = q.options.map((opt, i) => `
+    <div class="option" data-idx="${i}">
+      <span class="bullet"></span>
+      <span>${formatOpt(opt)}</span>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <div class="meta-row">
+      <span class="tag ${q.type === 'code' ? 'type-code' : ''}">${q.category}${q.type === 'code' ? ' · code' : ''}</span>
+      <span class="qcount">Question ${current + 1} of ${order.length}</span>
+    </div>
+    <p class="question">${q.question}</p>
+    ${codeHtml}
+    <div class="options" id="optionsWrap">${optionsHtml}</div>
+    <div id="feedbackWrap"></div>
+    <div class="footer-row" id="footerRow">
+      <button class="btn" id="submitBtn" disabled>Submit answer</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.option').forEach(el => {
+    el.addEventListener('click', () => {
+      if(isAnswered) return;
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedOption = parseInt(el.dataset.idx, 10);
+      document.getElementById('submitBtn').disabled = false;
+    });
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+  updateHeader();
+}
+
+function formatOpt(opt){
+  // wrap things that look like code tokens in <code>, keep plain text otherwise
+  return opt.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function submitAnswer(){
+  if(selectedOption === null || isAnswered) return;
+  isAnswered = true;
+  answered++;
+
+  const q = QUESTIONS[order[current]];
+  const correct = selectedOption === q.correct;
+  if(correct) score++;
+
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.add('disabled');
+    if(i === q.correct) el.classList.add('correct');
+    else if(i === selectedOption) el.classList.add('wrong');
+  });
+
+  const feedbackHtml = `
+    <div class="feedback ${correct ? 'correct' : 'wrong'}">
+      <div class="verdict">${correct ? '✓ Correct' : '✗ Not quite'}</div>
+      <div class="explain">${q.explanation}</div>
+      ${!correct ? `<div class="answer-line">Correct answer: <b>${formatOpt(q.options[q.correct])}</b></div>` : ''}
+    </div>
+  `;
+  document.getElementById('feedbackWrap').innerHTML = feedbackHtml;
+
+  const isLast = current === order.length - 1;
+  document.getElementById('footerRow').innerHTML = `
+    <button class="btn next" id="nextBtn">${isLast ? 'See results' : 'Next question'}</button>
+  `;
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if(isLast){
+      renderSummary();
+    } else {
+      current++;
+      renderQuestion();
+    }
+  });
+
+  updateHeader();
+}
+
+function renderSummary(){
+  current = order.length;
+  updateHeader();
+  const pct = Math.round((score / order.length) * 100);
+  card.innerHTML = `
+    <div class="summary">
+      <span class="tag">Test complete</span>
+      <div class="big">${score} / ${order.length}</div>
+      <p>${pct}% correct across loops, theory, and DSA questions.</p>
+      <button class="btn" id="restartBtn">Restart with new order</button>
+    </div>
+  `;
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    order = shuffle(QUESTIONS.map((_, i) => i));
+    current = 0; score = 0; answered = 0;
+    renderQuestion();
+  });
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
