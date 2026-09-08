@@ -1,3 +1,11 @@
 make a page that contains python loops and coding theory and coding and
 included dsa coding to questions like a test and after a question submisiion it should explain me right or wrong and if
   wronng why and actual answer and then should go to other code question or theory question randomly  
+
+
+
+
+
+Got it — real coding questions where you write Python, and it actually 
+runs your code against test cases. I'll use Pyodide
+(Python compiled to run in the browser) so your code executes for real, no fake grading.
