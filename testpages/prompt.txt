@@ -10,3 +10,6 @@ to compare and score to boost up at last certification from KOLKAR NISHA talk_to
 
 yeah go ahead with changes and make it as real python trainning asssement platform rather than a collection of coding exercises
 And most importantly, make the system distinguish between learning feedback and exam feedback: Learn Mode teaches the learner after mistakes; Test Mode evaluates the learner first and reveals the answers only after submission.
+
+
+at 9th question it was stopping
