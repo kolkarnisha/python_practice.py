@@ -3,3 +3,10 @@ assume yourself as python learner and trainer ....in  both cases like you gettin
 you need best learning and well as errors with correct answers to learn and as well think yourself as trainer 
 that you should conduct tests to python learners that means the page should contain answers 
 to compare and score to boost up at last certification from KOLKAR NISHA talk_tonic  patform
+
+
+
+
+
+yeah go ahead with changes and make it as real python trainning asssement platform rather than a collection of coding exercises
+And most importantly, make the system distinguish between learning feedback and exam feedback: Learn Mode teaches the learner after mistakes; Test Mode evaluates the learner first and reveals the answers only after submission.
