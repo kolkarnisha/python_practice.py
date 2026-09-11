@@ -13,3 +13,9 @@ And most importantly, make the system distinguish between learning feedback and 
 
 
 at 9th question it was stopping
+
+
+
+next-level improvement would be to turn this into a real training assessment system with login,
+learner dashboard, question levels, timed exams, question types such as MCQ/output prediction/debugging, 
+progress history, and a trainer/admin dashboard rather than only coding assessment.
