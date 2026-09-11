@@ -199,4 +199,79 @@ edge cases
 
 This will make the page feel much more like a real Python training assessment platform rather than a collection of coding exercises.
 
-And most importantly, I would make the system distinguish between learning feedback and exam feedback: Learn Mode teaches the learner after mistakes; Test Mode evaluates the learner first and reveals the answers only after submission.
+And most importantly, I would make the system distinguish between learning feedback and exam feedback: Learn Mode teaches the learner
+after mistakes; Test Mode evaluates the learner first and reveals the answers only after submission.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Absolutely. I upgraded the existing page into a Python Training + Assessment Platform, rather than leaving it as a simple collection of coding exercises.
+
+What is now different
+📘 Learn Mode
+Designed like a trainer is teaching the learner.
+Wrong answer → explains what went wrong.
+Shows expected vs actual output.
+Gives a trainer tip based on the error.
+Shows the reference solution immediately after submission.
+Learner can retry the same question.
+Latest successful attempt contributes to the learning score.
+Includes skill/concept labels and learning focus.
+🎯 Test Mode
+Behaves like an actual assessment.
+No reference answer before submission.
+One scored attempt per question.
+Automatic test-case evaluation.
+Score and percentage calculated automatically.
+Strengths and areas needing practice shown at the end.
+Reference solution becomes available only after submission.
+🏆 Certification
+70% passing threshold.
+Certificate generated for successful Test Mode completion.
+Learner name.
+Score and percentage.
+Certificate ID.
+Issue date.
+KOLKAR NISHA • talk_tonic branding.
+Printable certificate.
+👨‍🏫 Trainer-style structure
+Difficulty levels.
+Skills/topics.
+Concepts being tested.
+Learning goals.
+Trainer feedback.
+Strength/weakness analysis.
+
+I also fixed the important scoring problem in the previous version where Learn Mode
+
+could never properly increase the score after a successful retry. The new version tracks the learner's 
+latest result for each question.
+
+The upgraded file is ready:
+
+Download the upgraded Python Training & Assessment Platform
+
+The biggest design principle is now exactly what you requested:
+
+Learn Mode = Teach → Correct → Explain → Retry → Master
+Test Mode = Attempt → Evaluate → Score → Reveal → Certify
+
+One important next-level improvement would be to turn this into a real training assessment s
+ystem with login, learner dashboard, question levels, timed exams, question types such as MCQ/output
+prediction/debugging, progress history, 
+and a trainer/admin dashboard rather than only coding assessment.
