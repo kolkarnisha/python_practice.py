@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>talk_tonic Python Training & Assessment Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/Tezumie/Skulpt-CDN@latest/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Tezumie/Skulpt-CDN@latest/skulpt-stdlib.js"></script>
+<style>
+  :root{
+    --bg: #121815;
+    --panel: #182019;
+    --panel-border: #2a352c;
+    --paper: #ECE7DA;
+    --paper-dim: #A9B0A5;
+    --amber: #D9A441;
+    --brick: #C1503F;
+    --teal: #4E9587;
+    --teal-dim: #355c53;
+    --editor-bg: #0D110E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display:flex;
+    justify-content:center;
+    padding: 48px 20px 80px;
+    line-height: 1.5;
+  }
+  .wrap{ width:100%; max-width: 720px; }
+
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 16px;
+  }
+  header.top h1{ font-size: 1.05rem; font-weight: 600; margin:0; }
+  header.top .score{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--paper-dim);
+  }
+  header.top .score b{ color: var(--amber); font-weight:600; }
+
+  .progress-track{
+    height: 3px; background: var(--panel-border); border-radius: 2px;
+    margin-bottom: 26px; overflow:hidden;
+  }
+  .progress-fill{ height:100%; background: var(--teal); width:0%; transition: width 0.4s ease; }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 30px;
+  }
+
+  .meta-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px; }
+  .tag{
+    font-family:'JetBrains Mono', monospace; font-size: 0.72rem;
+    padding: 4px 10px; border-radius: 100px;
+    border: 1px solid var(--teal-dim); color: var(--teal);
+    background: rgba(78,149,135,0.08);
+  }
+  .qcount{ font-family:'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--paper-dim); }
+
+  .question{ font-size: 1.12rem; font-weight: 500; margin: 0 0 10px; color: #F5F2E8; }
+  .prompt-detail{ font-size: 0.92rem; color: var(--paper-dim); margin: 0 0 20px; }
+  .prompt-detail code{ font-family:'JetBrains Mono', monospace; background: rgba(255,255,255,0.06); padding:1px 5px; border-radius:4px; color:#D8D3C4; }
+
+  .examples{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--paper-dim);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+  .examples div{ padding: 2px 0; }
+
+  textarea#codeInput{
+    width: 100%;
+    min-height: 220px;
+    background: var(--editor-bg);
+    color: #E7E2D2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    resize: vertical;
+    tab-size: 4;
+    outline: none;
+  }
+  textarea#codeInput:focus{ border-color: var(--teal-dim); }
+
+  .editor-row{ margin-bottom: 18px; }
+
+  .btn-row{ display:flex; justify-content:space-between; align-items:center; margin-top: 4px; }
+  .left-btns{ display:flex; gap:10px; }
+
+  .btn{
+    font-family:'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.9rem;
+    padding: 11px 20px; border-radius: 8px; border: none; cursor:pointer;
+    background: var(--amber); color: #241B0A;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:hover{ filter: brightness(1.08); }
+  .btn:disabled{ opacity: 0.35; cursor:not-allowed; }
+  .btn.next{ background: var(--teal); color: #0B1512; }
+  .btn.ghost{ background: transparent; border:1px solid var(--panel-border); color: var(--paper-dim); font-weight:500; }
+  .btn.ghost:hover{ color: var(--paper); border-color: var(--paper-dim); }
+
+  .status-line{
+    font-family:'JetBrains Mono', monospace; font-size: 0.82rem;
+    color: var(--paper-dim); margin-bottom: 16px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .dot{ width:7px; height:7px; border-radius:50%; background: var(--paper-dim); }
+  .dot.ready{ background: var(--teal); }
+  .dot.busy{ background: var(--amber); animation: pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .feedback{
+    border-radius: 8px; padding: 18px 20px; margin: 20px 0;
+    border: 1px solid; animation: rise 0.25s ease;
+  }
+  @keyframes rise{ from{ opacity:0; transform: translateY(4px); } to{ opacity:1; transform: translateY(0);} }
+  .feedback.correct{ background: rgba(78,149,135,0.1); border-color: var(--teal-dim); }
+  .feedback.wrong{ background: rgba(193,80,63,0.1); border-color: #6b342c; }
+  .feedback .verdict{ font-weight: 700; font-size: 0.98rem; margin-bottom: 10px; }
+  .feedback.correct .verdict{ color: var(--teal); }
+  .feedback.wrong .verdict{ color: var(--brick); }
+
+  .test-row{
+    font-family:'JetBrains Mono', monospace; font-size: 0.82rem;
+    display:flex; gap:10px; padding:6px 0; align-items:flex-start;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .test-row:first-of-type{ border-top:none; }
+  .test-badge{ flex:0 0 46px; font-weight:700; }
+  .test-badge.pass{ color: var(--teal); }
+  .test-badge.fail{ color: var(--brick); }
+  .test-detail{ color: var(--paper-dim); }
+  .test-detail b{ color: var(--paper); font-weight:600; }
+
+  .why-wrong{ font-size: 0.93rem; margin-top: 14px; color: var(--paper); }
+
+  .reference{
+    margin-top: 16px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    overflow:hidden;
+  }
+  .reference summary{
+    cursor:pointer; padding: 12px 16px; font-size: 0.88rem; font-weight:600;
+    color: var(--amber); background: rgba(217,164,65,0.06);
+    list-style: none;
+  }
+  .reference summary::-webkit-details-marker{ display:none; }
+  .reference summary::before{ content: '▸ '; }
+  .reference[open] summary::before{ content: '▾ '; }
+  pre.ref-code{
+    margin:0; padding: 16px 18px; background: var(--editor-bg);
+    font-family:'JetBrains Mono', monospace; font-size: 0.85rem; color:#D8D3C4;
+    overflow-x:auto; white-space:pre;
+  }
+  .ref-explain{ padding: 14px 18px; font-size: 0.88rem; color: var(--paper-dim); border-top: 1px solid var(--panel-border); }
+
+  .summary{ text-align:center; padding: 20px 10px 10px; }
+  .summary .big{ font-family:'JetBrains Mono', monospace; font-size: 2.6rem; color: var(--amber); margin: 10px 0 6px; }
+  .summary p{ color: var(--paper-dim); font-size: 0.95rem; margin-bottom: 26px; }
+
+  .loading-screen{ text-align:center; padding: 60px 10px; color: var(--paper-dim); font-family:'JetBrains Mono', monospace; font-size:0.9rem; }
+
+  .brand{color:var(--amber);font-weight:700;}
+  .mode-pill{font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:4px 9px;border:1px solid var(--panel-border);border-radius:999px;color:var(--paper-dim);margin-left:8px;}
+  .hero{padding:8px 0 4px;}
+  .hero h2{font-size:1.55rem;margin:0 0 8px;}
+  .hero p{color:var(--paper-dim);margin:0 0 22px;}
+  .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;}
+  .mode-card{border:1px solid var(--panel-border);border-radius:9px;padding:18px;cursor:pointer;background:rgba(255,255,255,.02);transition:.15s;}
+  .mode-card:hover,.mode-card.selected{border-color:var(--teal);background:rgba(78,149,135,.08);}
+  .mode-card h3{margin:0 0 6px;font-size:1rem;}
+  .mode-card p{margin:0;color:var(--paper-dim);font-size:.84rem;}
+  .name-field{width:100%;background:var(--editor-bg);color:var(--paper);border:1px solid var(--panel-border);border-radius:8px;padding:12px;font:inherit;outline:none;}
+  .name-field:focus{border-color:var(--teal-dim);}
+  .trainer-note{margin:16px 0;padding:13px 15px;border-left:3px solid var(--amber);background:rgba(217,164,65,.06);color:var(--paper-dim);font-size:.86rem;border-radius:0 7px 7px 0;}
+  .trainer-note b{color:var(--paper);}
+  .concept-row{display:flex;gap:7px;flex-wrap:wrap;margin:-8px 0 17px;}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:4px 8px;border:1px solid var(--panel-border);border-radius:999px;color:var(--paper-dim);}
+  .feedback.learning{background:rgba(78,149,135,.1);border-color:var(--teal-dim);}
+  .feedback.learning.wrong{background:rgba(193,80,63,.1);border-color:#6b342c;}
+  .exam-lock{font-size:.82rem;color:var(--paper-dim);margin-top:10px;}
+  .analysis{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:22px 0;}
+  .analysis-box{border:1px solid var(--panel-border);border-radius:8px;padding:13px;background:rgba(255,255,255,.02);}
+  .analysis-box h4{margin:0 0 8px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--paper-dim);}
+  .analysis-box div{font-size:.85rem;margin:4px 0;}
+  .certificate{margin-top:24px;border:1px solid var(--amber);padding:28px 20px;background:#151a16;text-align:center;}
+  .certificate .cert-brand{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:.78rem;letter-spacing:.08em;}
+  .certificate h2{font-size:1.5rem;margin:12px 0 5px;}
+  .certificate .cert-name{font-size:1.6rem;font-weight:700;margin:14px 0;color:#fff;}
+  .certificate .cert-score{font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--teal);margin:10px 0;}
+  .certificate small{color:var(--paper-dim);}
+  .cert-actions{display:flex;justify-content:center;gap:10px;margin-top:15px;}
+  @media print{body{background:white;color:#111;padding:0}.wrap{max-width:900px}.top,.progress-track,.cert-actions,.certificate~*{display:none!important}.card{border:0;background:white;color:#111}.certificate{color:#111;border:2px solid #111;page-break-inside:avoid}.certificate h2,.certificate .cert-name{color:#111}.certificate .cert-brand,.certificate .cert-score{color:#111}.certificate small{color:#333}}
+  @media (max-width: 480px){
+    .card{ padding: 20px; }
+    .question{ font-size: 1.02rem; }
+    textarea#codeInput{ font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Python Training &amp; Assessment <span class="brand">• KOLKAR NISHA talk_tonic</span></h1>
+    <div class="score">Score <b id="scoreVal">0</b> / <span id="answeredVal">0</span></div>
+  </header>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="card" id="card">
+    <div class="loading-screen" id="loadingScreen">Loading the Python engine…</div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    title: "Sum up to n",
+    difficulty: "Beginner",
+    topic: "Loops & accumulators",
+    concept: "for loop",
+    learningGoal: "Build a running total and understand range boundaries.",
+    funcName: "sum_upto",
+    prompt: "Write <code>sum_upto(n)</code> that returns the sum of all integers from 1 to n (inclusive), using a loop — not the formula.",
+    examples: ["sum_upto(5)  ->  15", "sum_upto(1)  ->  1"],
+    starter: "def sum_upto(n):\n    total = 0\n    # your loop here\n    return total",
+    tests: [[[5], 15], [[1], 1], [[10], 55], [[0], 0]],
+    reference: "def sum_upto(n):\n    total = 0\n    for i in range(1, n + 1):\n        total += i\n    return total",
+    explanation: "Loop i from 1 to n (inclusive, so range(1, n+1)) and accumulate into total. This is the standard accumulator pattern: initialize a variable before the loop, update it each iteration."
+  },
+  {
+    title: "Count even numbers",
+    difficulty: "Beginner",
+    topic: "Conditions",
+    concept: "for + if",
+    learningGoal: "Combine iteration with a boolean condition.",
+    funcName: "count_evens",
+    prompt: "Write <code>count_evens(nums)</code> that returns how many numbers in the list are even, using a loop and an <code>if</code> check.",
+    examples: ["count_evens([1,2,3,4,5,6])  ->  3", "count_evens([1,3,5])  ->  0"],
+    starter: "def count_evens(nums):\n    count = 0\n    # loop over nums, check divisibility by 2\n    return count",
+    tests: [[[[1,2,3,4,5,6]], 3], [[[1,3,5]], 0], [[[]], 0], [[[2,4,6,8]], 4]],
+    reference: "def count_evens(nums):\n    count = 0\n    for n in nums:\n        if n % 2 == 0:\n            count += 1\n    return count",
+    explanation: "For each number, the condition <code>n % 2 == 0</code> checks if dividing by 2 leaves no remainder — that's what 'even' means. Increment a counter whenever it's true."
+  },
+  {
+    title: "FizzBuzz",
+    difficulty: "Beginner",
+    topic: "Conditions",
+    concept: "if / elif / else",
+    learningGoal: "Learn condition order and combined conditions.",
+    funcName: "fizzbuzz",
+    prompt: "Write <code>fizzbuzz(n)</code> that returns a list of strings for numbers 1 to n: 'Fizz' if divisible by 3, 'Buzz' if divisible by 5, 'FizzBuzz' if divisible by both, otherwise the number as a string.",
+    examples: ["fizzbuzz(5)  ->  ['1','2','Fizz','4','Buzz']", "fizzbuzz(3)  ->  ['1','2','Fizz']"],
+    starter: "def fizzbuzz(n):\n    result = []\n    for i in range(1, n + 1):\n        # add the right value to result\n        pass\n    return result",
+    tests: [[[5], ["1","2","Fizz","4","Buzz"]], [[3], ["1","2","Fizz"]], [[15], ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]]],
+    reference: "def fizzbuzz(n):\n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append('FizzBuzz')\n        elif i % 3 == 0:\n            result.append('Fizz')\n        elif i % 5 == 0:\n            result.append('Buzz')\n        else:\n            result.append(str(i))\n    return result",
+    explanation: "Check the most specific condition first: divisible by both 3 and 5 (i.e. by 15) before checking 3 or 5 alone — otherwise 'FizzBuzz' cases would incorrectly print just 'Fizz'. This is a classic case for elif ordering."
+  },
+  {
+    title: "Find the maximum",
+    difficulty: "Intermediate",
+    topic: "Lists + loops",
+    concept: "running best",
+    learningGoal: "Compare each item against the current best value.",
+    funcName: "find_max",
+    prompt: "Write <code>find_max(nums)</code> that returns the largest number in a non-empty list, using a loop — do not use the built-in <code>max()</code>.",
+    examples: ["find_max([3,7,2,9,4])  ->  9", "find_max([-5,-1,-10])  ->  -1"],
+    starter: "def find_max(nums):\n    biggest = nums[0]\n    # loop through the rest and compare\n    return biggest",
+    tests: [[[[3,7,2,9,4]], 9], [[[-5,-1,-10]], -1], [[[42]], 42], [[[1,2,3,4,5]], 5]],
+    reference: "def find_max(nums):\n    biggest = nums[0]\n    for n in nums[1:]:\n        if n > biggest:\n            biggest = n\n    return biggest",
+    explanation: "Start by assuming the first element is the biggest, then compare every other element against it, updating whenever you find something larger. This 'running best' pattern is the basis for min/max/argmax-style problems."
+  },
+  {
+    title: "Is it prime?",
+    difficulty: "Intermediate",
+    topic: "Loops + conditions",
+    concept: "divisibility",
+    learningGoal: "Use early return while checking possible divisors.",
+    funcName: "is_prime",
+    prompt: "Write <code>is_prime(n)</code> that returns True if n is a prime number (greater than 1, divisible only by 1 and itself), False otherwise.",
+    examples: ["is_prime(7)  ->  True", "is_prime(8)  ->  False", "is_prime(1)  ->  False"],
+    starter: "def is_prime(n):\n    if n <= 1:\n        return False\n    # loop and check divisibility\n    return True",
+    tests: [[[7], true], [[8], false], [[1], false], [[2], true], [[17], true], [[9], false]],
+    reference: "def is_prime(n):\n    if n <= 1:\n        return False\n    for i in range(2, n):\n        if n % i == 0:\n            return False\n    return True",
+    explanation: "A number is prime if nothing between 2 and n-1 divides it evenly. Loop through candidate divisors and return False the moment one divides n with no remainder; if the loop finishes without finding one, n is prime. (A faster version only checks up to sqrt(n), but this is the clearest version of the idea.)"
+  },
+  {
+    title: "Reverse a string (no slicing)",
+    difficulty: "Intermediate",
+    topic: "Strings + loops",
+    concept: "accumulator",
+    learningGoal: "Build a new string one character at a time.",
+    funcName: "reverse_string",
+    prompt: "Write <code>reverse_string(s)</code> that returns the string reversed, using a loop — do not use <code>s[::-1]</code> or <code>reversed()</code>.",
+    examples: ["reverse_string('hello')  ->  'olleh'", "reverse_string('ab')  ->  'ba'"],
+    starter: "def reverse_string(s):\n    result = ''\n    # build result by walking s backward, or prepending each char\n    return result",
+    tests: [[["hello"], "olleh"], [["ab"], "ba"], [["a"], "a"], [[""], ""]],
+    reference: "def reverse_string(s):\n    result = ''\n    for ch in s:\n        result = ch + result\n    return result",
+    explanation: "Instead of appending each character to the end, prepend it to the front of the growing result. Walking the string forward but always inserting at position 0 naturally builds it backward."
+  },
+  {
+    title: "Count vowels",
+    difficulty: "Beginner",
+    topic: "Strings + conditions",
+    concept: "membership",
+    learningGoal: "Loop through characters and test membership.",
+    funcName: "count_vowels",
+    prompt: "Write <code>count_vowels(s)</code> that returns the number of vowels (a, e, i, o, u — case-insensitive) in the string.",
+    examples: ["count_vowels('Hello World')  ->  3", "count_vowels('xyz')  ->  0"],
+    starter: "def count_vowels(s):\n    vowels = 'aeiou'\n    count = 0\n    # loop over s.lower() and check membership in vowels\n    return count",
+    tests: [[["Hello World"], 3], [["xyz"], 0], [["AEIOU"], 5], [[""], 0]],
+    reference: "def count_vowels(s):\n    vowels = 'aeiou'\n    count = 0\n    for ch in s.lower():\n        if ch in vowels:\n            count += 1\n    return count",
+    explanation: "Lowercase the string first so 'A' and 'a' are treated the same, then for each character check membership in the vowels string with <code>in</code> — a clean substitute for a chain of OR conditions."
+  },
+  {
+    title: "Sum of digits",
+    difficulty: "Intermediate",
+    topic: "While loops",
+    concept: "% and //",
+    learningGoal: "Extract digits using modulo and integer division.",
+    funcName: "sum_digits",
+    prompt: "Write <code>sum_digits(n)</code> that returns the sum of the digits of a non-negative integer n, using a <code>while</code> loop (no string conversion).",
+    examples: ["sum_digits(1234)  ->  10", "sum_digits(9)  ->  9"],
+    starter: "def sum_digits(n):\n    total = 0\n    while n > 0:\n        # peel off the last digit with % and //\n        pass\n    return total",
+    tests: [[[1234], 10], [[9], 9], [[0], 0], [[100], 1]],
+    reference: "def sum_digits(n):\n    total = 0\n    while n > 0:\n        total += n % 10\n        n = n // 10\n    return total",
+    explanation: "<code>n % 10</code> gives the last digit, and <code>n // 10</code> chops it off (integer division). Repeating this in a while loop until n reaches 0 visits every digit exactly once."
+  },
+  {
+    title: "Factorial with a loop",
+    difficulty: "Beginner",
+    topic: "Loops + accumulators",
+    concept: "multiplication accumulator",
+    learningGoal: "Understand why factorial starts at 1 and uses n + 1.",
+    funcName: "factorial",
+    prompt: "Write <code>factorial(n)</code> that returns n! (n factorial) using a loop, not recursion.",
+    examples: ["factorial(4)  ->  24", "factorial(0)  ->  1"],
+    starter: "def factorial(n):\n    result = 1\n    # multiply result by each number from 1 to n\n    return result",
+    tests: [[[4], 24], [[0], 1], [[1], 1], [[5], 120]],
+    reference: "def factorial(n):\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result",
+    explanation: "Same accumulator pattern as summing, but multiplying instead of adding, and starting from 1 (the multiplicative identity) instead of 0. range(1, n+1) also correctly gives 1 for n=0, since the loop body never runs."
+  },
+  {
+    title: "First n Fibonacci numbers",
+    difficulty: "Intermediate",
+    topic: "Lists + while loops",
+    concept: "state update",
+    learningGoal: "Maintain the previous two values while building a sequence.",
+    funcName: "fibonacci",
+    prompt: "Write <code>fibonacci(n)</code> that returns a list of the first n Fibonacci numbers, starting 0, 1, 1, 2, 3, 5, ...",
+    examples: ["fibonacci(5)  ->  [0, 1, 1, 2, 3]", "fibonacci(1)  ->  [0]"],
+    starter: "def fibonacci(n):\n    seq = [0, 1]\n    # extend seq with a loop until it has n items\n    return seq[:n]",
+    tests: [[[5], [0,1,1,2,3]], [[1], [0]], [[2], [0,1]], [[8], [0,1,1,2,3,5,8,13]]],
+    reference: "def fibonacci(n):\n    if n <= 0:\n        return []\n    seq = [0, 1]\n    while len(seq) < n:\n        seq.append(seq[-1] + seq[-2])\n    return seq[:n]",
+    explanation: "Keep appending the sum of the last two elements until the list is long enough, then trim to exactly n items (handles n=1 and n=0 cleanly via the final slice)."
+  },
+  {
+    title: "Palindrome check",
+    difficulty: "Intermediate",
+    topic: "While loops + strings",
+    concept: "two pointers",
+    learningGoal: "Compare both ends while moving inward.",
+    funcName: "is_palindrome",
+    prompt: "Write <code>is_palindrome(s)</code> that returns True if the string reads the same forwards and backwards, using a loop (not slicing).",
+    examples: ["is_palindrome('level')  ->  True", "is_palindrome('hello')  ->  False"],
+    starter: "def is_palindrome(s):\n    # compare characters from both ends moving inward\n    return True",
+    tests: [[["level"], true], [["hello"], false], [["a"], true], [["noon"], true], [["abca"], false]],
+    reference: "def is_palindrome(s):\n    left, right = 0, len(s) - 1\n    while left < right:\n        if s[left] != s[right]:\n            return False\n        left += 1\n        right -= 1\n    return True",
+    explanation: "The two-pointer technique: one index starts at the front, one at the back, and they move toward each other, comparing characters at each step. Any mismatch means it's not a palindrome; if the pointers meet without one, it is."
+  },
+  {
+    title: "Grade classifier",
+    difficulty: "Beginner",
+    topic: "Conditions",
+    concept: "threshold logic",
+    learningGoal: "Order if/elif thresholds from highest to lowest.",
+    funcName: "grade",
+    prompt: "Write <code>grade(score)</code> that returns a letter grade using if/elif/else: 'A' for 90+, 'B' for 80-89, 'C' for 70-79, 'D' for 60-69, else 'F'.",
+    examples: ["grade(95)  ->  'A'", "grade(62)  ->  'D'", "grade(40)  ->  'F'"],
+    starter: "def grade(score):\n    # chain of if/elif/else on score\n    return 'F'",
+    tests: [[[95], "A"], [[85], "B"], [[72], "C"], [[62], "D"], [[40], "F"], [[90], "A"], [[89], "B"]],
+    reference: "def grade(score):\n    if score >= 90:\n        return 'A'\n    elif score >= 80:\n        return 'B'\n    elif score >= 70:\n        return 'C'\n    elif score >= 60:\n        return 'D'\n    else:\n        return 'F'",
+    explanation: "Check thresholds from highest to lowest. Because elif only runs if earlier conditions were False, checking >= 90 first and working down means each branch only needs one boundary, not a range like <code>80 <= score < 90</code>."
+  }
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let order = shuffle(QUESTIONS.map((_, i) => i));
+let current = 0;
+let score = 0;
+let answered = 0;
+let running = false;
+let outputBuffer = '';
+let mode = null;
+let candidateName = '';
+let selectedModeCard = null;
+const PASS_PCT = 70;
+
+// Track questions that have already been graded so retries do not inflate the score.
+const gradedQuestions = new Set();
+const learningResults = new Map();
+const performance = new Map();
+
+const card = document.getElementById('card');
+
+function updateHeader(){
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('answeredVal').textContent = answered;
+  const pct = order.length === 0
+    ? 0
+    : Math.min((current / order.length) * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function builtinRead(x){
+  if(Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined){
+    throw "File not found: '" + x + "'";
+  }
+  return Sk.builtinFiles["files"][x];
+}
+
+function boot(){
+  try{
+    Sk.configure({
+      output: (text) => { outputBuffer += text; },
+      read: builtinRead,
+      __future__: Sk.python3
+    });
+    renderSetup();
+  }catch(e){
+    card.innerHTML = `<div class="loading-screen">Couldn't load the Python engine. Error: ${escapeHtml(String(e))}</div>`;
+  }
+}
+
+function renderSetup(){
+  card.innerHTML = `
+    <div class="hero">
+      <span class="tag">KOLKAR NISHA • talk_tonic</span>
+      <h2>Python Training &amp; Assessment</h2>
+      <p>Learn the concept, practise with guidance, then prove your skills in a structured assessment.</p>
+    </div>
+    <label style="display:block;font-size:.85rem;color:var(--paper-dim);margin-bottom:7px;">Learner name</label>
+    <input id="candidateName" class="name-field" placeholder="Enter your name for the certificate (optional in Learn Mode)">
+    <div class="mode-grid">
+      <div class="mode-card" data-mode="learn"><h3>📘 Learn Mode</h3><p>Make mistakes safely. Get explanations, trainer tips, expected vs actual output, reference code and retry.</p></div>
+      <div class="mode-card" data-mode="test"><h3>🎯 Test Mode</h3><p>Exam conditions. Submit first, get evaluated, then unlock the reference answer and score analysis.</p></div>
+    </div>
+    <div class="trainer-note"><b>Trainer rule:</b> Learn Mode teaches after every attempt. Test Mode does not reveal the answer before submission.</div>
+    <div class="btn-row"><span id="modeHint" class="exam-lock">Choose a mode to begin.</span><button class="btn" id="startBtn" disabled>Start training</button></div>`;
+  selectedModeCard=null; mode=null;
+  document.querySelectorAll('.mode-card').forEach(el=>el.addEventListener('click',()=>{
+    document.querySelectorAll('.mode-card').forEach(x=>x.classList.remove('selected'));
+    el.classList.add('selected'); selectedModeCard=el; mode=el.dataset.mode;
+    document.getElementById('startBtn').disabled=false;
+    document.getElementById('startBtn').textContent=mode==='learn'?'Start learning':'Start assessment';
+    document.getElementById('modeHint').textContent=mode==='learn'?'Retries are encouraged. Your latest result counts toward mastery.':'One scored attempt per question. Answers unlock after submission.';
+  }));
+  document.getElementById('startBtn').addEventListener('click',()=>{
+    candidateName=document.getElementById('candidateName').value.trim();
+    order=shuffle(QUESTIONS.map((_,i)=>i)); current=0; score=0; answered=0;
+    gradedQuestions.clear(); learningResults.clear(); performance.clear();
+    renderQuestion();
+  });
+  updateHeader();
+}
+
+function trainerTip(q, results, hardError){
+  if(hardError) return 'Trainer tip: fix the first syntax, indentation, name, or runtime error before checking the logic. Run again after the code executes.';
+  const failed=results.filter(r=>!r.pass);
+  if(!failed.length) return `Excellent. Your solution handles the tested cases. Focus skill: ${q.topic||'Python fundamentals'}.`;
+  const r=failed[0];
+  if(r.error){
+    const e=r.error;
+    if(/NameError/i.test(e)) return 'Trainer tip: a variable or function name is missing or spelled differently. Check names carefully.';
+    if(/TypeError/i.test(e)) return 'Trainer tip: check the data type and the operation you are applying to it.';
+    if(/IndexError/i.test(e)) return 'Trainer tip: check list/string indexes and make sure they are inside the valid range.';
+    if(/ZeroDivisionError/i.test(e)) return 'Trainer tip: make sure your divisor cannot become zero.';
+    return 'Trainer tip: the code runs into an exception. Read the error message from the first failing case and trace that input step by step.';
+  }
+  return `Trainer tip: your function ran, but the logic is not correct for at least one case. Compare expected ${fmt(r.expected)} with your actual ${fmt(r.actual)} and trace the loop one iteration at a time.`;
+}
+
+function recordResult(q, allPass){
+  const qIndex=order[current];
+  if(mode==='learn'){
+    if(!learningResults.has(qIndex)) answered++;
+    learningResults.set(qIndex, allPass);
+    score=[...learningResults.values()].filter(Boolean).length;
+  }else{
+    if(!gradedQuestions.has(qIndex)){ gradedQuestions.add(qIndex); answered++; if(allPass) score++; performance.set(qIndex, allPass); }
+  }
+}
+
+// Turn a JS value (from our test-case data) into Python source literal text.
+function pyLiteral(v){
+  if(v === null) return 'None';
+  if(typeof v === 'boolean') return v ? 'True' : 'False';
+  if(typeof v === 'number') return String(v);
+  if(typeof v === 'string') return JSON.stringify(v);
+  if(Array.isArray(v)) return '[' + v.map(pyLiteral).join(', ') + ']';
+  return JSON.stringify(v);
+}
+
+// Build Python source that, appended after the user's code, calls their
+// function on each test case and prints a marked line with the JSON-ish
+// result (or the exception message) — no json/globals dependency needed.
+function buildHarness(q){
+  const lines = [];
+  lines.push("def __st_to_json(v):");
+  lines.push("    if v is None:");
+  lines.push("        return 'null'");
+  lines.push("    if v is True:");
+  lines.push("        return 'true'");
+  lines.push("    if v is False:");
+  lines.push("        return 'false'");
+  lines.push("    if isinstance(v, (int, float)):");
+  lines.push("        return str(v)");
+  lines.push("    if isinstance(v, str):");
+  lines.push("        esc = v.replace(chr(92), chr(92)+chr(92)).replace(chr(34), chr(92)+chr(34)).replace(chr(10), chr(92)+'n')");
+  lines.push("        return chr(34) + esc + chr(34)");
+  lines.push("    if isinstance(v, list) or isinstance(v, tuple):");
+  lines.push("        return '[' + ','.join([__st_to_json(x) for x in v]) + ']'");
+  lines.push("    return chr(34) + str(v) + chr(34)");
+  lines.push("");
+  lines.push("try:");
+  lines.push(`    ${q.funcName}`);
+  lines.push("except NameError:");
+  lines.push("    print('@@NOFUNC@@')");
+  lines.push("else:");
+  q.tests.forEach((t, i) => {
+    const argsLit = t[0].map(pyLiteral).join(', ');
+    lines.push(`    try:`);
+    lines.push(`        __st_r${i} = ${q.funcName}(${argsLit})`);
+    lines.push(`        print('@@R${i}@@' + __st_to_json(__st_r${i}))`);
+    lines.push(`    except Exception as e:`);
+    lines.push(`        print('@@E${i}@@' + str(e))`);
+  });
+  return lines.join('\n');
+}
+
+function deepEqual(a, b){
+  if(Array.isArray(a) && Array.isArray(b)){
+    if(a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  return a === b;
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[order[current]];
+  const examplesHtml = q.examples.map(e => `<div>${escapeHtml(e)}</div>`).join('');
+
+  card.innerHTML = `
+    <div class="meta-row">
+      <span class="tag">${mode === 'learn' ? 'LEARN MODE' : 'TEST MODE'}</span>
+      <span class="qcount">Question ${current + 1} of ${order.length} • ${q.difficulty || 'Core'}</span>
+    </div>
+    <p class="question">${q.title}</p>
+    <p class="prompt-detail">${q.prompt}</p>
+    <div class="concept-row"><span class="chip">Skill: ${escapeHtml(q.topic || 'Python fundamentals')}</span><span class="chip">Concept: ${escapeHtml(q.concept || 'Problem solving')}</span></div>
+    <div class="examples">${examplesHtml}</div>
+    ${mode === 'learn' ? `<div class="trainer-note"><b>Learning focus:</b> ${escapeHtml(q.learningGoal || q.explanation.replace(/<[^>]*>/g,''))}</div>` : `<div class="trainer-note"><b>Assessment rule:</b> Submit your solution before the reference answer is revealed. Your first submitted result is the scored result.</div>`}
+    <div class="editor-row">
+      <textarea id="codeInput" spellcheck="false">${escapeHtml(q.starter)}</textarea>
+    </div>
+    <div class="status-line"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready to run</span></div>
+    <div class="btn-row">
+      <div class="left-btns">
+        <button class="btn ghost" id="resetBtn">Reset to starter</button>
+      </div>
+      <button class="btn" id="submitBtn">Run &amp; submit</button>
+    </div>
+    <div id="feedbackWrap"></div>
+  `;
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('codeInput').value = q.starter;
+  });
+  document.getElementById('submitBtn').addEventListener('click', () => runAndGrade(q));
+
+  const ta = document.getElementById('codeInput');
+  ta.addEventListener('keydown', (e) => {
+    if(e.key === 'Tab'){
+      e.preventDefault();
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = start + 4;
+    }
+  });
+
+  updateHeader();
+}
+
+async function runAndGrade(q){
+  if(running) return;
+  running = true;
+  const submitBtn = document.getElementById('submitBtn');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  submitBtn.disabled = true;
+  statusDot.className = 'dot busy';
+  statusText.textContent = 'Running your code…';
+
+  const userCode = document.getElementById('codeInput').value;
+  const harness = buildHarness(q);
+  const fullCode = userCode + '\n\n' + harness;
+  outputBuffer = '';
+
+  try{
+    await Sk.misceval.asyncToPromise(function(){
+      return Sk.importMainWithBody('<stdin>', false, fullCode, true);
+    });
+
+    const lines = outputBuffer.split('\n').filter(l => l.length > 0);
+
+    if(lines.some(l => l.indexOf('@@NOFUNC@@') === 0)){
+      showFeedback(q, null, `Your code doesn't define a function called <b>${q.funcName}</b>. Make sure the function name matches exactly.`);
+    } else {
+      const results = q.tests.map((t, i) => {
+        const rLine = lines.find(l => l.indexOf(`@@R${i}@@`) === 0);
+        const eLine = lines.find(l => l.indexOf(`@@E${i}@@`) === 0);
+        if(rLine){
+          const raw = rLine.slice(`@@R${i}@@`.length);
+          let actual;
+          try{ actual = JSON.parse(raw); } catch(e){ actual = raw; }
+          return { args: t[0], expected: t[1], actual: actual, pass: deepEqual(actual, t[1]) };
+        } else if(eLine){
+          const errMsg = eLine.slice(`@@E${i}@@`.length);
+          return { args: t[0], expected: t[1], actual: null, error: errMsg, pass: false };
+        } else {
+          return { args: t[0], expected: t[1], actual: null, error: 'no output produced', pass: false };
+        }
+      });
+      showFeedback(q, results, null);
+    }
+  }catch(err){
+    showFeedback(q, null, `Your code raised an error before it could be tested:<br><code>${escapeHtml(String(err.toString ? err.toString() : err))}</code>`);
+  }
+
+  running = false;
+  statusDot.className = 'dot ready';
+  statusText.textContent = 'Ready to run';
+  submitBtn.disabled = false;
+}
+
+function fmt(v){
+  if(v === null || v === undefined) return '—';
+  return JSON.stringify(v);
+}
+
+function showFeedback(q, results, hardError){
+  let allPass=false;
+  if(!hardError) allPass=results.every(r=>r.pass);
+  recordResult(q, allPass);
+  const failed=results ? results.filter(r=>!r.pass) : [];
+  const isLearn=mode==='learn';
+  const isLast=current===order.length-1;
+  const verdictText=hardError ? '✗ Code could not be evaluated' : (allPass ? `✓ All ${results.length} tests passed` : `✗ ${failed.length} of ${results.length} tests failed`);
+  let bodyHtml=hardError ? `<div class="why-wrong">${hardError}</div>` : results.map((r,i)=>{
+    const badge=r.pass?'<span class="test-badge pass">PASS</span>':'<span class="test-badge fail">FAIL</span>';
+    const argsStr=r.args.map(a=>JSON.stringify(a)).join(', ');
+    const detail=r.error
+      ? `${q.funcName}(${escapeHtml(argsStr)}) — expected <b>${escapeHtml(fmt(r.expected))}</b>, but raised <b>${escapeHtml(r.error)}</b>`
+      : `${q.funcName}(${escapeHtml(argsStr)}) — expected <b>${escapeHtml(fmt(r.expected))}</b>, got <b>${escapeHtml(fmt(r.actual))}</b>`;
+    return `<div class="test-row">${badge}<span class="test-detail">${detail}</span></div>`;
+  }).join('');
+
+  const learningBlock=isLearn ? `
+    <div class="trainer-note"><b>Trainer feedback:</b> ${trainerTip(q,results,hardError)}</div>
+    ${allPass ? '<div class="why-wrong">You can move on, but you can also open the reference solution to compare your approach with the trainer solution.</div>' : '<div class="why-wrong"><b>What to do next:</b> read the failed case, trace your variables/conditions, then retry. The reference solution is intentionally available in Learn Mode so the mistake becomes a learning opportunity.</div>'}
+    ${referenceBlock(q,true)}` : `
+    <div class="exam-lock">Answer revealed after submission. Your scored result is now recorded.</div>
+    ${referenceBlock(q,false)}`;
+
+  const feedbackHtml=`<div class="feedback ${allPass?'correct':'wrong'} ${isLearn?'learning':''}">
+    <div class="verdict">${verdictText}</div>${bodyHtml}${learningBlock}
+  </div>
+  <div class="btn-row" style="margin-top:18px;justify-content:flex-end;gap:10px;">
+    ${isLearn && !isLast ? '<button class="btn ghost" id="retryBtn">Retry this question</button>' : ''}
+    ${isLearn && isLast ? '<button class="btn ghost" id="retryBtn">Retry this question</button>' : ''}
+    <button class="btn next" id="nextBtn">${isLast?'See training results':'Next question'}</button>
+  </div>`;
+  document.getElementById('feedbackWrap').innerHTML=feedbackHtml;
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('resetBtn').style.display='none';
+  document.getElementById('codeInput').setAttribute('readonly','true');
+  const retry=document.getElementById('retryBtn');
+  if(retry) retry.addEventListener('click',()=>renderQuestion());
+  document.getElementById('nextBtn').addEventListener('click',()=>{ if(isLast) renderSummary(); else {current++;renderQuestion();} });
+  updateHeader();
+}
+
+function referenceBlock(q, openByDefault){
+  return `<details class="reference" ${openByDefault?'open':''}>
+    <summary>${mode==='learn'?'Reference solution + explanation':'Reference solution + explanation (unlocked)'}</summary>
+    <pre class="ref-code">${escapeHtml(q.reference)}</pre>
+    <div class="ref-explain">${q.explanation}</div>
+  </details>`;
+}
+
+function renderSummary(){
+  current=order.length; updateHeader();
+  const pct=Math.round((score/order.length)*100);
+  const passed=score>=Math.ceil(order.length*(PASS_PCT/100));
+  const mastered=order.filter(i=>mode==='test'?performance.get(i):learningResults.get(i)).map(i=>QUESTIONS[i].topic||'Python');
+  const needs=order.filter(i=>!(mode==='test'?performance.get(i):learningResults.get(i))).map(i=>QUESTIONS[i].topic||'Python');
+  const unique=a=>[...new Set(a)];
+  const certId='TT-'+new Date().getFullYear()+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  const date=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  card.innerHTML=`<div class="summary">
+    <span class="tag">${mode==='test'?'Assessment complete':'Training complete'}</span>
+    <div class="big">${score} / ${order.length}</div>
+    <p><b>${pct}%</b> ${mode==='test'?'assessment score':'latest-attempt mastery score'} • ${passed?'Passed':'Keep practising'}${mode==='test'?' • '+(passed?'Certificate earned':'Certificate not yet earned'):''}</p>
+    <div class="analysis">
+      <div class="analysis-box"><h4>Strengths</h4>${unique(mastered).slice(0,5).map(x=>`<div>✓ ${escapeHtml(x)}</div>`).join('')||'<div>Complete a few more questions to identify strengths.</div>'}</div>
+      <div class="analysis-box"><h4>Needs practice</h4>${unique(needs).slice(0,5).map(x=>`<div>• ${escapeHtml(x)}</div>`).join('')||'<div>Great work — no weak area recorded.</div>'}</div>
+    </div>
+    ${mode==='test'&&passed?`<div class="certificate" id="certificate">
+      <div class="cert-brand">KOLKAR NISHA • talk_tonic</div>
+      <h2>Certificate of Achievement</h2>
+      <div>This certifies that</div>
+      <div class="cert-name">${escapeHtml(candidateName||'Python Learner')}</div>
+      <div>has successfully completed the</div>
+      <div style="font-weight:700;margin:7px 0;">Python Loops &amp; Conditionals Training Assessment</div>
+      <div class="cert-score">Score: ${score}/${order.length} • ${pct}%</div>
+      <small>Certificate ID: ${certId} • Issued: ${date}</small>
+      <div style="margin-top:14px;color:var(--paper-dim);font-size:.82rem;">Issued by KOLKAR NISHA, talk_tonic platform</div>
+    </div><div class="cert-actions"><button class="btn" id="printCert">Print certificate</button></div>`:''}
+    <div style="margin-top:22px;"><button class="btn" id="restartBtn">Start a new ${mode==='test'?'assessment':'training session'}</button></div>
+  </div>`;
+  const print=document.getElementById('printCert'); if(print) print.addEventListener('click',()=>window.print());
+  document.getElementById('restartBtn').addEventListener('click',()=>{order=shuffle(QUESTIONS.map((_,i)=>i));current=0;score=0;answered=0;gradedQuestions.clear();learningResults.clear();performance.clear();renderQuestion();});
+}
+
+boot();
+</script>
+</body>
+</html>
