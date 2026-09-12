@@ -13,6 +13,7 @@ And most importantly, make the system distinguish between learning feedback and 
 
 
 at 9th question it was stopping
+  make sure the questions flow frequently
 
 
 
