@@ -1,4 +1,24 @@
 def ang(s1,s2):
+    if sorted(s1)==sorted(s2):
+        print("anagram")
+ang("listen","silent")
+s1='listen'
+s2=sorted(s1)
+print(s2)
+s1='silent'
+s2=sorted(s1)
+print(s2)
+def ang(s1,s2):
+    if s1[::-1]==s2[::-1]:
+        print("anagram")
+ang("listen","silent")
+
+
+
+
+
+
+def ang(s1,s2):
     if s1[::-1]==s2[::-1]:
         print("anagram")
 ang("nisha","ahsin")
