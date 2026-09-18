@@ -1,3 +1,15 @@
+# 4. Check if Two Strings are Anagrams
+# python
+def are_anagrams(s1, s2):
+    return sorted(s1) == sorted(s2)
+
+print(are_anagrams("listen", "silent"))
+# Output: True
+
+
+
+
+
 def ang(s1,s2):
     if sorted(s1)==sorted(s2):
         print("anagram")
