@@ -1,3 +1,35 @@
+def fnr(str):
+    emptydict={}
+    for i in str:
+        emptydict[i]=emptydict.get(i,0)+1
+    for j in str:
+        if emptydict[j]==1:
+            print(emptydict)
+            return j
+            #   print( j)
+    # return None
+fnr("nniissha")
+
+
+
+
+
+def fnr(str):
+    d={}
+    for i in str:
+        d[i]=d.get(i,0)+1
+    for j in str:
+        if d[j]==1:
+            print(j)
+            print(d)
+            print(j)
+fnr("nniissha")
+           
+        
+
+
+
+
 # 4. Check if Two Strings are Anagrams
 # python
 def are_anagrams(s1, s2):
