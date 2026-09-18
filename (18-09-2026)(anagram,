@@ -1,3 +1,13 @@
+def ang(s1,s2):
+    if s1[::-1]==s2[::-1]:
+        print("anagram")
+ang("nisha","ahsin")
+s1='listen'
+s2=s1[::-1]
+print(s2)
+
+
+
 s1='listen'
 print(s1.split())
 print(s1)
