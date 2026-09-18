@@ -217,6 +217,49 @@ else:
 
 
 
+
+
+  date 18-09-26
+  ''' finding out target'''
+def find(str,target):
+    for i in str:
+        if i==target:
+            return i
+str="nisha"
+target="a"
+find(str,target)
+'''finding out indexes'''
+def ind(str,target):
+    for i,j in enumerate(str):
+        if j==target:
+            return i
+str="nisha"
+target="a"
+ind(str,target)
+''' all indexs'''
+def all(str,target):
+    c=[]
+    for i,j in enumerate(str):
+        if j==target:
+            c.append(i)
+    return c
+all("nishataaaaj","a")
+''' in dict '''
+def dic(str,target):
+    d={}
+    m=len(str)
+    n=len(target)
+    for i in range(m-n+1):
+        if i==target:
+            for j in range(n):
+                d[target[j]]=i+j
+                # d.append(i,j)
+    return d
+dic("nisha","ha")
+
+
+
+
         
   
       
