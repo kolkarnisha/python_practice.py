@@ -216,11 +216,9 @@ else:
 
 
 
+print("date 18/09/2026")
 
-
-
-  date 18-09-26
-  ''' finding out target'''
+''' finding out target'''
 def find(str,target):
     for i in str:
         if i==target:
@@ -256,7 +254,6 @@ def dic(str,target):
                 # d.append(i,j)
     return d
 dic("nisha","ha")
-
 
 
 
