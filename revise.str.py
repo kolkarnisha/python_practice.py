@@ -256,6 +256,120 @@ def dic(str,target):
 dic("nisha","ha")
 
 
+print("date 21-09-2026")
+Python 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
+#finding out a target
+str='nishazareentaj'
+target='z'
+for i in str:
+    if i==target:
+        print(i)
+
+        
+z
+
+str='nishazzzzzareentaj'
+target='z'
+for i in str:
+    if i==target:
+        print(i)
+        
+SyntaxError: multiple statements found while compiling a single statement
+
+str='nishazzzareentaz'
+target='z'
+for i in str:
+    if i==target:
+        print(i)
+
+        
+z
+z
+z
+z
+#finding out index of a target
+str='nishataj'
+target='h'
+for i,j in enumerate(str):
+    if j==target:
+        print(i)
+
+        
+3
+
+#finding out all indexes
+str='nishataaaj'
+target='a'
+empty=[]
+for i,j in enumerate(str):
+    if j==target:
+        empty.append(i)
+
+        
+
+str='nishaaataj'
+target='a'
+e=[]
+for i,j in enumerate(str):
+    if j==target:
+        e.append(i)
+print(e)
+SyntaxError: invalid syntax
+
+str='nishaaataj'
+target='a'
+e=[]
+for i,j in enumerate(str):
+    if j==target:
+        e.append(i)
+        
+SyntaxError: multiple statements found while compiling a single statement
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#finding out substring
+def sub(str,sustr):
+    m=len(str)
+    n=len(sustr)
+    for i in range(m-n+1):
+        if i==sustr:
+            print(i)
+sub('nishataj','taj')
+SyntaxError: invalid syntax
+
+def sub(str,sustr):
+    m=len(str)
+    n=len(sustr)
+    for i in range(m-n+1):
+        if str[i:i+n]==sustr:
+            return i
+sub('nishataj','taj')
+SyntaxError: invalid syntax
+
+
+      
+
+
 
         
   
