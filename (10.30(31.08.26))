@@ -5,6 +5,8 @@ Traceback (most recent call last):
   File "<pyshell#0>", line 1, in <module>
     a=true
 NameError: name 'true' is not defined. Did you mean: 'True'?
+
+
 print(type(a))
 Traceback (most recent call last):
   File "<pyshell#1>", line 1, in <module>
