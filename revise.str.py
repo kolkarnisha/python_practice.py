@@ -4,6 +4,7 @@ str="nishazareentaj"
 for i in str:
    if i=="a":
      print(i)
+      
 
 '''finding out a fixed target '''
 def find():
