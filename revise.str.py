@@ -6,7 +6,7 @@ for i in str:
      print(i)
       
 
-'''finding out a fixed target '''
+'''finding out a fixed target ''' 
 def find():
   str="nisha"
   target="a"
