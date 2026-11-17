@@ -3,7 +3,7 @@ print(str)
 def strfind():
     for i in str:
         if i=="z":
-            print(i)
+            print(i) 
             # print(i)
     # str.split()
     # for i in range(str):
