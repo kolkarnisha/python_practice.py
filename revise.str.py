@@ -1,7 +1,7 @@
 #finding out target
 #strings
 str="nishazareentaj"
-for i in str:
+for i in str: 
    if i=="a":
      print(i)
       
